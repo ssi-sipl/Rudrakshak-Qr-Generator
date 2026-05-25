@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import QRCode from "qrcode";
 import QRHistory from "@/models/qrhistory.js";
 import connectDB from "@/config/database";
-import { createCanvas, loadImage ,registerFont } from "canvas";
+import { createCanvas, loadImage } from "canvas";
 export async function POST(req) {
   try {
     await connectDB();
@@ -35,10 +35,6 @@ export async function POST(req) {
     const objectId = qrHistoryEntry._id;
     await qrHistoryEntry.save();
 
-    registerFont("./fonts/NotoSans-Regular.ttf", {
-  family: "Noto Sans",
-    }); 
-
     const canvas = createCanvas(500, 600);
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "white";
@@ -46,8 +42,9 @@ export async function POST(req) {
     const qrImg = await loadImage(qrImage);
     ctx.drawImage(qrImg, 30, 30, 440, 440);
     ctx.fillStyle = "black";
-    ctx.font = "20px 'Noto Sans'";
-    console.log(objectId);
+    ctx.font = "20px Arial";
+    console.log( `This is object id in console ${objectId}`);
+    console.log( `This is object id in console ${objectId.toString()}`);
     ctx.fillText(`ID: ${objectId}`, 100, 500);
     const finalQrImage = canvas.toDataURL();
 
