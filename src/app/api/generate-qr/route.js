@@ -44,6 +44,7 @@ export async function POST(req) {
     ctx.drawImage(qrImg, 30, 30, 440, 440);
     ctx.fillStyle = "black";
     ctx.font = "20px Arial";
+    console.log(objectId);
     ctx.fillText(`ID: ${objectId}`, 100, 500);
     const finalQrImage = canvas.toDataURL();
 
