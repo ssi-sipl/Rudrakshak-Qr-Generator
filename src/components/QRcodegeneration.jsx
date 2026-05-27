@@ -18,6 +18,7 @@ export default function QRcodegeneration() {
     rtspUrl: "",
     battery: "",
     status: "",
+    activeShuruMode:""
   });
 
   const handleChange = (e) => {
@@ -44,6 +45,7 @@ export default function QRcodegeneration() {
         rtspUrl: formData.rtspUrl,
         battery: formData.battery,
         status: formData.status,
+        activeShuruMode: formData.activeShuruMode,
       });
 
       setQrImage(response.data.finalQrImage);
@@ -209,6 +211,25 @@ export default function QRcodegeneration() {
                 <option value="Inactive">Inactive</option>
               </select>
             </div>
+
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-medium text-slate-300">
+                Active Shuru Mode
+              </span>
+               <select
+                name="activeShuruMode"
+                value={formData.activeShuruMode}
+                onChange={handleChange}
+                className="bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
+              >
+                <option value="">Select Status</option>
+
+                <option value="Active">Active</option>
+
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
 
             <button
               type="submit"

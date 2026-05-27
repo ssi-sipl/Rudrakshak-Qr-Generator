@@ -7,7 +7,7 @@ export async function POST(req) {
   try {
     await connectDB();
     const body = await req.json();
-    const { sensorId, name, sensorType, ipAddress, rtspUrl, battery, status } =
+    const { sensorId, name, sensorType, ipAddress, rtspUrl, battery, status , activeShuruMode } =
       body;
 
     const qrData = JSON.stringify({
@@ -18,6 +18,7 @@ export async function POST(req) {
       rtspUrl,
       battery,
       status,
+      activeShuruMode
     });
     console.log(qrData + "qr data in route.js");
     const qrImage = await QRCode.toDataURL(qrData);
