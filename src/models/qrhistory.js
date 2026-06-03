@@ -4,9 +4,9 @@ const qrHistorySchema = new mongoose.Schema({
     sensorId: { type: String, required: true },
     name: { type: String, required: true },
     sensorType: { type: String, required: true },
-    ipAddress: { type: String, required: true },
-    rtspUrl: { type: String, required: true },
-    battery: { type: String, required: true },
+    ipAddress: { type: String, required: false },
+    rtspUrl: { type: String, required: false },
+    battery: { type: String, required: false },
     status: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
 });
