@@ -10,6 +10,8 @@ export default function QRcodegeneration() {
   const [qrHistory, setQrHistory] = useState([]);
   const [qrId, setQrId] = useState("");
 
+const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     sensorId: "",
     name: "",
@@ -36,34 +38,39 @@ export default function QRcodegeneration() {
   };
 
   const generateQR = async () => {
-    try {
-      const response = await axios.post("/api/generate-qr", {
-        sensorId: formData.sensorId,
-        name: formData.name,
-        sensorType: formData.sensorType,
-        ipAddress: formData.ipAddress,
-        rtspUrl: formData.rtspUrl,
-        battery: formData.battery,
-        status: formData.status,
-        activeShuruMode: formData.activeShuruMode,
-      });
+  try {
+    setLoading(true);
 
-      setQrImage(response.data.finalQrImage);
-      const id = response.data.objectId;
-      setQrId(id);
+    const response = await axios.post("/api/generate-qr", {
+      sensorId: formData.sensorId,
+      name: formData.name,
+      sensorType: formData.sensorType,
+      ipAddress: formData.ipAddress,
+      rtspUrl: formData.rtspUrl,
+      battery: formData.battery,
+      status: formData.status,
+      activeShuruMode: formData.activeShuruMode,
+    });
 
-      const image = response.data.finalQrImage;
+    setQrImage(response.data.finalQrImage);
 
-      const link = document.createElement("a");
-      link.href = image;
-      link.download = `QR-${id}.png`;
-      link.click();
+    const id = response.data.objectId;
+    setQrId(id);
 
-      setGenerated(true);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    const image = response.data.finalQrImage;
+
+    const link = document.createElement("a");
+    link.href = image;
+    link.download = `QR-${id}.png`;
+    link.click();
+
+    setGenerated(true);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const fetchHistory = async () => {
     try {
@@ -232,11 +239,16 @@ export default function QRcodegeneration() {
 
 
             <button
-              type="submit"
-              className="md:col-span-2 bg-blue-600 hover:bg-blue-700 transition-all duration-300 rounded-xl py-4 font-semibold text-lg shadow-lg"
-            >
-              Generate QR Code
-            </button>
+  type="submit"
+  disabled={loading}
+  className={`md:col-span-2 rounded-xl py-4 font-semibold text-lg shadow-lg transition-all duration-300 ${
+    loading
+      ? "bg-gray-600 cursor-not-allowed"
+      : "bg-blue-600 hover:bg-blue-700"
+  }`}
+>
+  {loading ? "Generating QR..." : "Generate QR Code"}
+</button>
           </form>
         </div>
 
@@ -316,6 +328,21 @@ export default function QRcodegeneration() {
           </div>
         </div>
       </div>
+      {loading && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+    <div className="bg-slate-900 rounded-3xl p-8 text-center border border-slate-700">
+      <div className="h-16 w-16 mx-auto border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+
+      <h2 className="mt-4 text-xl font-semibold text-white">
+        Generating QR Code...
+      </h2>
+
+      <p className="mt-2 text-slate-400">
+        Please wait while we process your request.
+      </p>
+    </div>
+  </div>
+)}
     </section>
   );
 }
