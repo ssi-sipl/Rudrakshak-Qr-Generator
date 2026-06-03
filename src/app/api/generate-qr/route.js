@@ -34,25 +34,33 @@ export async function POST(req) {
       status,
     });
     console.log(qrHistoryEntry);
+    
     const objectId = qrHistoryEntry._id;
-    await qrHistoryEntry.save();
+const shortId = objectId.toString().slice(-6);
 
-    const canvas = createCanvas(500, 600);
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    const qrImg = await loadImage(qrImage);
-    ctx.drawImage(qrImg, 30, 30, 440, 440);
-    ctx.fillStyle = "black";
-    ctx.font = "20px Arial";
-    console.log( `This is object id in console ${objectId}`);
-    console.log( `This is object id in console ${objectId.toString()}`);
-    ctx.fillText(`ID: ${objectId}`, 100, 500);
-    const finalQrImage = canvas.toDataURL();
+await qrHistoryEntry.save();
 
+const canvas = createCanvas(500, 600);
+const ctx = canvas.getContext("2d");
+
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+const qrImg = await loadImage(qrImage);
+ctx.drawImage(qrImg, 30, 30, 440, 440);
+
+ctx.fillStyle = "black";
+ctx.font = "12px Arial";
+
+console.log(`Object ID: ${objectId}`);
+console.log(`Short ID: ${shortId}`);
+
+ctx.fillText(`ID: ${shortId}`, 120, 490);
+
+const finalQrImage = canvas.toDataURL();
     return NextResponse.json({
       success: true,
-      objectId,
+      objectId: shortId,
       finalQrImage,
     });
   } catch (error) {
