@@ -50,12 +50,12 @@ const qrImg = await loadImage(qrImage);
 ctx.drawImage(qrImg, 30, 30, 440, 440);
 
 ctx.fillStyle = "black";
-ctx.font = "12px Arial";
+ctx.font = "12px sans-serif";
 
 console.log(`Object ID: ${objectId}`);
 console.log(`Short ID: ${shortId}`);
 
-ctx.fillText(`ID: ${shortId}`, 120, 490);
+ctx.fillText(shortId, 120, 490);
 
 const finalQrImage = canvas.toDataURL();
     return NextResponse.json({
