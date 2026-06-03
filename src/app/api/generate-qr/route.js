@@ -3,6 +3,7 @@ import QRCode from "qrcode";
 import QRHistory from "@/models/qrhistory.js";
 import connectDB from "@/config/database";
 import { createCanvas, loadImage } from "canvas";
+import { encryptData } from "@/utils/crypto";
 export async function POST(req) {
   try {
     await connectDB();
@@ -10,7 +11,7 @@ export async function POST(req) {
     const { sensorId, name, sensorType, ipAddress, rtspUrl, battery, status , activeShuruMode } =
       body;
 
-    const qrData = JSON.stringify({
+    const qrData = encryptData({
       sensorId,
       name,
       sensorType,

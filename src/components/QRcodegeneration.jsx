@@ -152,7 +152,7 @@ export default function QRcodegeneration() {
 
             <div className="flex flex-col gap-2">
               <span className="text-sm font-medium text-slate-300">
-                IP Address
+                IP Address (optional)
               </span>
 
               <input
@@ -167,7 +167,7 @@ export default function QRcodegeneration() {
 
             <div className="flex flex-col gap-2 md:col-span-2">
               <span className="text-sm font-medium text-slate-300">
-                RTSP URL
+                RTSP URL (optional)
               </span>
 
               <input
@@ -182,13 +182,13 @@ export default function QRcodegeneration() {
 
             <div className="flex flex-col gap-2">
               <span className="text-sm font-medium text-slate-300">
-                Battery Status
+                Battery Status (optional)
               </span>
 
               <input
                 type="text"
                 name="battery"
-                placeholder="86%"
+                placeholder="86"
                 value={formData.battery}
                 onChange={handleChange}
                 className="bg-slate-800 border border-slate-600 rounded-xl px-4 py-3 outline-none focus:border-blue-500"
