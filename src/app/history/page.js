@@ -6,13 +6,18 @@ import Link from "next/link";
 
 export default function History() {
   const [qrHistory, setQrHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchHistory = async () => {
     try {
+      setLoading(true);
+
       const response = await axios.get("./api/history");
       setQrHistory(response.data.history);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -56,7 +61,17 @@ export default function History() {
         </div>
 
         {/* Empty State */}
-        {qrHistory.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="flex flex-col items-center gap-4">
+              <div className="h-12 w-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+
+              <span className="px-4 py-2 rounded-full bg-blue-500/20 text-blue-300 text-sm font-medium border border-blue-500/30">
+                Loading History...
+              </span>
+            </div>
+          </div>
+        ) : qrHistory.length === 0 ? (
           <div className="flex justify-center items-center">
             <div className="bg-[#0f172a] border border-blue-500/20 rounded-2xl px-10 py-8 shadow-2xl">
               <p className="text-gray-300 text-lg">No history available.</p>
