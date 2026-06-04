@@ -10,7 +10,7 @@ export default function QRcodegeneration() {
   const [qrHistory, setQrHistory] = useState([]);
   const [qrId, setQrId] = useState("");
 
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     sensorId: "",
@@ -37,40 +37,67 @@ const [loading, setLoading] = useState(false);
     generateQR();
   };
 
-  const generateQR = async () => {
-  try {
-    setLoading(true);
+  const composeQrWithLabel = async (qrSrc, label) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 500;
+    canvas.height = 600;
 
-    const response = await axios.post("/api/generate-qr", {
-      sensorId: formData.sensorId,
-      name: formData.name,
-      sensorType: formData.sensorType,
-      ipAddress: formData.ipAddress,
-      rtspUrl: formData.rtspUrl,
-      battery: formData.battery,
-      status: formData.status,
-      activeShuruMode: formData.activeShuruMode,
+    const ctx = canvas.getContext("2d");
+    const image = new Image();
+    image.src = qrSrc;
+
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = reject;
     });
 
-    setQrImage(response.data.finalQrImage);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(image, 30, 30, 440, 440);
 
-    const id = response.data.objectId;
-    setQrId(id);
+    // Draw the printable id in the browser to avoid server font issues in production.
+    ctx.fillStyle = "#000000";
+    ctx.font = "600 28px Arial, Helvetica, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(label, canvas.width / 2, 505);
 
-    const image = response.data.finalQrImage;
+    return canvas.toDataURL("image/png");
+  };
 
-    const link = document.createElement("a");
-    link.href = image;
-    link.download = `QR-${id}.png`;
-    link.click();
+  const generateQR = async () => {
+    try {
+      setLoading(true);
 
-    setGenerated(true);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setLoading(false);
-  }
-};
+      const response = await axios.post("/api/generate-qr", {
+        sensorId: formData.sensorId,
+        name: formData.name,
+        sensorType: formData.sensorType,
+        ipAddress: formData.ipAddress,
+        rtspUrl: formData.rtspUrl,
+        battery: formData.battery,
+        status: formData.status,
+        activeShuruMode: formData.activeShuruMode,
+      });
+
+      const id = response.data.objectId;
+      const image = await composeQrWithLabel(response.data.qrImage, id);
+
+      setQrImage(image);
+      setQrId(id);
+
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = `QR-${id}.png`;
+      link.click();
+
+      setGenerated(true);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchHistory = async () => {
     try {
@@ -82,7 +109,11 @@ const [loading, setLoading] = useState(false);
   };
 
   useEffect(() => {
-    fetchHistory();
+    const loadHistory = async () => {
+      await fetchHistory();
+    };
+
+    loadHistory();
   }, []);
 
   const updateHistory = async (data) => {
