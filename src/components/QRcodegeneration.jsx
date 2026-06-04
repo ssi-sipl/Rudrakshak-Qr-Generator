@@ -36,34 +36,37 @@ export default function QRcodegeneration() {
     e.preventDefault();
     generateQR();
   };
+const composeQrWithLabel = async (qrSrc, label) => {
+  const canvas = document.createElement("canvas");
 
-  const composeQrWithLabel = async (qrSrc, label) => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 500;
-    canvas.height = 600;
+  canvas.width = 800;
+  canvas.height = 900;
 
-    const ctx = canvas.getContext("2d");
-    const image = new Image();
-    image.src = qrSrc;
+  const ctx = canvas.getContext("2d");
+  const image = new Image();
+  image.src = qrSrc;
 
-    await new Promise((resolve, reject) => {
-      image.onload = resolve;
-      image.onerror = reject;
-    });
+  await new Promise((resolve, reject) => {
+    image.onload = resolve;
+    image.onerror = reject;
+  });
 
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(image, 30, 30, 440, 440);
+  // White background
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw the printable id in the browser to avoid server font issues in production.
-    ctx.fillStyle = "#000000";
-    ctx.font = "600 28px Arial, Helvetica, sans-serif";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(label, canvas.width / 2, 505);
+  // Large QR occupying most of the page
+  ctx.drawImage(image, 10, 20, 800, 800);
 
-    return canvas.toDataURL("image/png");
-  };
+  // ID text
+  ctx.fillStyle = "#000000";
+  ctx.font = "bold 42px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(label, canvas.width / 2, 840);
+
+  return canvas.toDataURL("image/png");
+};
 
   const generateQR = async () => {
     try {
