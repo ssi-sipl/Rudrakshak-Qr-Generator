@@ -37,36 +37,42 @@ export default function QRcodegeneration() {
     generateQR();
   };
 
-  const composeQrWithLabel = async (qrSrc, label) => {
-    const canvas = document.createElement("canvas");
+ const composeQrWithLabel = async (qrSrc, label) => {
+  const canvas = document.createElement("canvas");
 
-    canvas.width = 1500;
-    canvas.height = 1500;
+  canvas.width = 1500;
+  canvas.height = 1700; // Increased height
 
-    const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d");
 
-    const image = new Image();
-    image.src = qrSrc;
+  const image = new Image();
+  image.src = qrSrc;
 
-    await new Promise((resolve, reject) => {
-      image.onload = resolve;
-      image.onerror = reject;
-    });
+  await new Promise((resolve, reject) => {
+    image.onload = resolve;
+    image.onerror = reject;
+  });
 
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // White background
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // QR occupies almost entire page
-    ctx.drawImage(image, 0, 0, 1400, 1400);
+  // QR code (centered)
+  const qrSize = 1400;
+  const qrX = (canvas.width - qrSize) / 2;
 
-    // ID at bottom
-    ctx.fillStyle = "#000";
-    ctx.font = "bold 70px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText(`ID: ${label}`, 600, 1260);
+  ctx.drawImage(image, qrX, 0, qrSize, qrSize);
 
-    return canvas.toDataURL("image/png");
-  };
+  // ID below QR
+  ctx.fillStyle = "#000";
+  ctx.font = "bold 70px Arial";
+  ctx.textAlign = "center";
+
+  // Position text below QR with spacing
+  ctx.fillText(`ID: ${label}`, canvas.width / 2, 1550);
+
+  return canvas.toDataURL("image/png");
+};
 
   const generateQR = async () => {
     try {
@@ -83,7 +89,7 @@ export default function QRcodegeneration() {
         activeShuruMode: formData.activeShuruMode,
       });
 
-      const id = response.data.serialNumber;
+      const id = formData.sensorId
       const image = await composeQrWithLabel(response.data.qrImage, id);
 
       setQrImage(image);
