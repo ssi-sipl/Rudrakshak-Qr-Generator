@@ -36,13 +36,15 @@ export default function QRcodegeneration() {
     e.preventDefault();
     generateQR();
   };
-const composeQrWithLabel = async (qrSrc, label) => {
+
+  const composeQrWithLabel = async (qrSrc, label) => {
   const canvas = document.createElement("canvas");
 
-  canvas.width = 800;
-  canvas.height = 900;
+  canvas.width = 1500;
+  canvas.height = 1500;
 
   const ctx = canvas.getContext("2d");
+
   const image = new Image();
   image.src = qrSrc;
 
@@ -51,19 +53,17 @@ const composeQrWithLabel = async (qrSrc, label) => {
     image.onerror = reject;
   });
 
-  // White background
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Large QR occupying most of the page
-  ctx.drawImage(image, 10, 20, 800, 800);
+  // QR occupies almost entire page
+  ctx.drawImage(image, 0, 0, 1500, 1500);
 
-  // ID text
-  ctx.fillStyle = "#000000";
-  ctx.font = "bold 42px Arial";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(label, canvas.width / 2, 840);
+  // // ID at bottom
+  // ctx.fillStyle = "#000";
+  // ctx.font = "bold 70px Arial";
+  // ctx.textAlign = "center";
+  // ctx.fillText(`ID: ${label}`, 600, 1260);
 
   return canvas.toDataURL("image/png");
 };

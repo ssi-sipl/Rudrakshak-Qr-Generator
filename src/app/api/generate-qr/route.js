@@ -32,7 +32,7 @@ export async function POST(req) {
     const qrImage = await QRCode.toDataURL(qrData, {
       errorCorrectionLevel: "L",
        width: 1200,
-  margin: 4,
+        margin: 2,
     });
 
     const qrHistoryEntry = new QRHistory({
