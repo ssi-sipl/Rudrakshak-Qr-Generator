@@ -20,7 +20,7 @@ export default function QRcodegeneration() {
     rtspUrl: "",
     battery: "",
     status: "",
-    activeShuruMode:""
+    activeShuruMode: "",
   });
 
   const handleChange = (e) => {
@@ -38,35 +38,35 @@ export default function QRcodegeneration() {
   };
 
   const composeQrWithLabel = async (qrSrc, label) => {
-  const canvas = document.createElement("canvas");
+    const canvas = document.createElement("canvas");
 
-  canvas.width = 1500;
-  canvas.height = 1500;
+    canvas.width = 1500;
+    canvas.height = 1500;
 
-  const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
 
-  const image = new Image();
-  image.src = qrSrc;
+    const image = new Image();
+    image.src = qrSrc;
 
-  await new Promise((resolve, reject) => {
-    image.onload = resolve;
-    image.onerror = reject;
-  });
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = reject;
+    });
 
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // QR occupies almost entire page
-  ctx.drawImage(image, 0, 0, 1400, 1400);
+    // QR occupies almost entire page
+    ctx.drawImage(image, 0, 0, 1400, 1400);
 
-  // ID at bottom
-  ctx.fillStyle = "#000";
-  ctx.font = "bold 70px Arial";
-  ctx.textAlign = "center";
-  ctx.fillText(`ID: ${label}`, 600, 1260);
+    // ID at bottom
+    ctx.fillStyle = "#000";
+    ctx.font = "bold 70px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText(`ID: ${label}`, 600, 1260);
 
-  return canvas.toDataURL("image/png");
-};
+    return canvas.toDataURL("image/png");
+  };
 
   const generateQR = async () => {
     try {
@@ -257,7 +257,7 @@ export default function QRcodegeneration() {
               <span className="text-sm font-medium text-slate-300">
                 Active Shuru Mode
               </span>
-               <select
+              <select
                 name="activeShuruMode"
                 value={formData.activeShuruMode}
                 onChange={handleChange}
@@ -271,18 +271,17 @@ export default function QRcodegeneration() {
               </select>
             </div>
 
-
             <button
-  type="submit"
-  disabled={loading}
-  className={`md:col-span-2 rounded-xl py-4 font-semibold text-lg shadow-lg transition-all duration-300 ${
-    loading
-      ? "bg-gray-600 cursor-not-allowed"
-      : "bg-blue-600 hover:bg-blue-700"
-  }`}
->
-  {loading ? "Generating QR..." : "Generate QR Code"}
-</button>
+              type="submit"
+              disabled={loading}
+              className={`md:col-span-2 rounded-xl py-4 font-semibold text-lg shadow-lg transition-all duration-300 ${
+                loading
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
+            >
+              {loading ? "Generating QR..." : "Generate QR Code"}
+            </button>
           </form>
         </div>
 
@@ -363,20 +362,20 @@ export default function QRcodegeneration() {
         </div>
       </div>
       {loading && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-    <div className="bg-slate-900 rounded-3xl p-8 text-center border border-slate-700">
-      <div className="h-16 w-16 mx-auto border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-slate-900 rounded-3xl p-8 text-center border border-slate-700">
+            <div className="h-16 w-16 mx-auto border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
 
-      <h2 className="mt-4 text-xl font-semibold text-white">
-        Generating QR Code...
-      </h2>
+            <h2 className="mt-4 text-xl font-semibold text-white">
+              Generating QR Code...
+            </h2>
 
-      <p className="mt-2 text-slate-400">
-        Please wait while we process your request.
-      </p>
-    </div>
-  </div>
-)}
+            <p className="mt-2 text-slate-400">
+              Please wait while we process your request.
+            </p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
