@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const qrHistorySchema = new mongoose.Schema({
+    serialNumber : {type: Number, required: true},
     sensorId: { type: String, required: true },
     name: { type: String, required: true },
     sensorType: { type: String, required: true },

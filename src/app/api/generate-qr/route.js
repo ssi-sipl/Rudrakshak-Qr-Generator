@@ -3,10 +3,22 @@ import QRCode from "qrcode";
 import QRHistory from "@/models/qrhistory.js";
 import connectDB from "@/config/database";
 import { encryptData } from "@/utils/crypto";
+
 export async function POST(req) {
   try {
     await connectDB();
+
+    // Generate next serial number
+    const lastRecord = await QRHistory
+      .findOne()
+      .sort({ serialNumber: -1 });
+
+    const serialNumber = lastRecord
+      ? lastRecord.serialNumber + 1
+      : 1;
+
     const body = await req.json();
+
     const {
       sensorId,
       name,
@@ -19,6 +31,7 @@ export async function POST(req) {
     } = body;
 
     const qrData = encryptData({
+      serialNumber,
       sensorId,
       name,
       sensorType,
@@ -28,14 +41,15 @@ export async function POST(req) {
       status,
       activeShuruMode,
     });
-    console.log(qrData + "qr data in route.js");
+
     const qrImage = await QRCode.toDataURL(qrData, {
       errorCorrectionLevel: "L",
-       width: 1200,
-        margin: 2,
+      width: 1200,
+      margin: 2,
     });
 
     const qrHistoryEntry = new QRHistory({
+      serialNumber,
       sensorId,
       name,
       sensorType,
@@ -43,22 +57,17 @@ export async function POST(req) {
       rtspUrl,
       battery,
       status,
+      activeShuruMode,
     });
-    console.log(qrHistoryEntry);
-
-    const objectId = qrHistoryEntry._id;
-    const shortId = objectId.toString().slice(-6);
 
     await qrHistoryEntry.save();
 
-    console.log(`Object ID: ${objectId}`);
-    console.log(`Short ID: ${shortId}`);
-
     return NextResponse.json({
       success: true,
-      objectId: shortId,
+      serialNumber,
       qrImage,
     });
+
   } catch (error) {
     console.error("Error generating QR code:", error);
 

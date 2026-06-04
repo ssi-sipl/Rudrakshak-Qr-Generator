@@ -57,13 +57,13 @@ export default function QRcodegeneration() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // QR occupies almost entire page
-  ctx.drawImage(image, 0, 0, 1500, 1500);
+  ctx.drawImage(image, 0, 0, 1400, 1400);
 
-  // // ID at bottom
-  // ctx.fillStyle = "#000";
-  // ctx.font = "bold 70px Arial";
-  // ctx.textAlign = "center";
-  // ctx.fillText(`ID: ${label}`, 600, 1260);
+  // ID at bottom
+  ctx.fillStyle = "#000";
+  ctx.font = "bold 70px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(`ID: ${label}`, 600, 1260);
 
   return canvas.toDataURL("image/png");
 };
@@ -83,7 +83,7 @@ export default function QRcodegeneration() {
         activeShuruMode: formData.activeShuruMode,
       });
 
-      const id = response.data.objectId;
+      const id = response.data.serialNumber;
       const image = await composeQrWithLabel(response.data.qrImage, id);
 
       setQrImage(image);
